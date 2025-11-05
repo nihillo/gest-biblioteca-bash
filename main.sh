@@ -9,8 +9,11 @@ buscar_linea() {
 }
 
 modificar_linea() {
-    
-    echo $1 $2 $3 
+    awk \
+        -v id="$1" \
+        -v col="$2" \
+        -v valor="$3" \
+        'BEGIN {FS=OFS=","} $1 == id {$col = valor} 1' "$4" > tmp.csv && mv tmp.csv "$4"
 }
 
 # Funciones de gestión de libros
@@ -46,7 +49,12 @@ modificar_libro() {
             ;;
     esac
 
+    echo "Modificando el libro"
+    echo "Registro actual: "
+    buscar_linea "$1" "libros.csv"
     modificar_linea "$1" "$campo" "$3" "libros.csv"
+    echo "Registro modificado: "
+    buscar_linea "$1" "libros.csv"
 }
 
 eliminar_libro() {
