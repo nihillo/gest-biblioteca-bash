@@ -16,6 +16,10 @@ modificar_linea() {
         'BEGIN {FS=OFS=","} $1 == id {$col = valor} 1' "$4" > tmp.csv && mv tmp.csv "$4"
 }
 
+borrar_linea () {
+    sed -i "/$1/d" "$2"
+}
+
 # Funciones de gestión de libros
 registrar_libro() {
     añadir_linea "$1,$2,$3" "libros.csv"
@@ -58,7 +62,11 @@ modificar_libro() {
 }
 
 eliminar_libro() {
-    echo "Estoy eliminando un libro"
+    echo "Se borrará el libro:"
+    l=$(buscar_linea "$1" "libros.csv")
+    echo "$l"
+    borrar_linea "$l" "libros.csv"
+    echo "Libro eliminado"
 }
 
 
