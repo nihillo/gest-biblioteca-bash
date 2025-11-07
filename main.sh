@@ -113,21 +113,25 @@ else
 
         case $opcion in
             1)
-                read -p "ISBN" isbn
+                read -p "ISBN: " isbn
                 read -p "Título del libro: " titulo
                 read -p "Autor del libro: " autor
-                registrar_libro $isbn $titulo $autor
+                echo $autor
+                registrar_libro "$isbn" "$titulo" "$autor"
                 ;;
-            2)
-                ./list_books.sh
+            2) 
+                read -p "Término de búsqueda (ISBN, título o autor): " termino
+                buscar_libro "$termino"
                 ;;
             3)
-                read -p "Título del libro a buscar: " titulo_buscar
-                ./search_book.sh "$titulo_buscar"
+                read -p "ISBN del libro a modificar: " isbn_mod
+                read -p "Campo a modificar (titulo/autor): " campo
+                read -p "Nuevo valor: " nuevo_valor
+                modificar_libro "$isbn_mod" "$campo" "$nuevo_valor"
                 ;;
             4)
-                read -p "Título del libro a eliminar: " titulo_eliminar
-                ./delete_book.sh "$titulo_eliminar"
+                read -p "ISBN del libro a eliminar: " isbn_elim
+                eliminar_libro "$isbn_elim"
                 ;;
             5)
                 echo "Saliendo..."
