@@ -6,7 +6,7 @@ SEPARADOR="|"
 # Funciones de gestión de libros
 registrar_libro() {
     ./util.sh "añadir_linea" "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$FICHERO"
-    echo "Libro registrado: "$2 $3 $4
+    echo "Libro registrado: "$1 $2 $3
 }
 
 buscar_libro() {

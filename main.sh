@@ -28,16 +28,16 @@ if [ $# -gt 0 ]; then
             ./libros.sh "el" "$2"
             ;;
         ru) # registrar usuario
-            ./ususarios.sh "ru"
+            ./usuarios.sh "ru" "$2" "$3"
             ;;
         bu) # buscar usuario
-            ./usuarios.sh "bu"
+            ./usuarios.sh "bu" "$2"
             ;;
         mu) # modificar usuario
-            ./usuarios.sh "mu"
+            ./usuarios.sh "mu" "$2" "$3" "$4"
             ;;
         eu) # eliminar usuario
-            ./usuarios.sh "eu"
+            ./usuarios.sh "eu" "$2"
             ;;
         h) # ayuda
             mostrar_ayuda
