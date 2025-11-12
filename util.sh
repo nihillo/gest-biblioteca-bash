@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Funciones de gestión de archivos CSV
 añadir_linea() {
     printf "$1\n" >> $2
 }
@@ -21,6 +22,28 @@ borrar_linea () {
 }
 
 
+# Funciones de validación
+validar_isbn() {
+    isbn="$1"
+    # Validar que el ISBN tenga 13 dígitos (formato ISBN-13)
+    if ! [[ "$isbn" =~ ^[0-9]{3}\-[0-9]{10}$ ]]; then
+        echo "Error: El ISBN '$isbn' no tiene un formato válido. Debe ser 'XXX-XXXXXXXXXX' donde X es un dígito."
+    fi
+    return
+}
+
+validar_texto() {
+    texto="$1"
+    campo="$2"
+    # Validar que el título no esté vacío y no contenga caracteres no permitidos
+    if [[ -z "$texto" || "$texto" =~ [\|] ]]; then
+        echo "Error: El '$campo' '$texto' no es válido. No debe estar vacío y no debe contener el carácter '|'."
+    fi
+    return
+}
+
+
+
 case $1 in
     añadir_linea)
         añadir_linea "$2" "$3"
@@ -33,6 +56,12 @@ case $1 in
         ;;
     borrar_linea)
         borrar_linea "$2" "$3"
+        ;;
+    validar_isbn)
+        validar_isbn "$2"
+        ;;
+    validar_texto)
+        validar_texto "$2" "$3"
         ;;
     *)
         echo "Función no reconocida"

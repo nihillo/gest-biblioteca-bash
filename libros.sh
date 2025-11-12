@@ -3,10 +3,42 @@
 FICHERO="libros.csv"
 SEPARADOR="|"
 
+
+
 # Funciones de gestión de libros
 registrar_libro() {
+
+    # Validaciones
+    # Validar formato del ISBN
+    v_isbn=$(./util.sh "validar_isbn" "$1")
+    if [ -n "$v_isbn" ]; then
+        echo $v_isbn
+        return
+    fi
+
+    # Verificar que el libro no exista ya
+    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    if [ -n "$existe" ]; then
+        echo "Error: Ya existe un libro con el ISBN '$1'."
+        return
+    fi    
+
+    # Validar texto del título y autor
+    v_titulo=$(./util.sh "validar_texto" "$2" "título")
+    if [ -n "$v_titulo" ]; then
+        echo $v_titulo
+        return
+    fi
+
+    v_autor=$(./util.sh "validar_texto" "$3" "autor")
+    if [ -n "$v_autor" ]; then
+        echo $v_autor
+        return
+    fi
+
     ./util.sh "añadir_linea" "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$FICHERO"
     echo "Libro registrado: "$1 $2 $3
+    return
 }
 
 buscar_libro() {
