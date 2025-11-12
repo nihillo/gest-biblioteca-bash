@@ -42,6 +42,7 @@ registrar_libro() {
 }
 
 buscar_libro() {
+
     echo "Resultados de la búsqueda para '$1':"
     printf "\n"
     # Crear un archivo temporal para formatear la salida
@@ -55,6 +56,20 @@ buscar_libro() {
 }
 
 modificar_libro() {
+    # Validar formato del ISBN
+    v_isbn=$(./util.sh "validar_isbn" "$1")
+    if [ -n "$v_isbn" ]; then
+        echo $v_isbn
+        return
+    fi
+
+    # Verificar que el libro exista
+    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    if ! [ -n "$existe" ]; then
+        echo "Error: No existe un libro con ISBN '$1'."
+        return
+    fi
+
     case $2 in
         titulo)
             campo=2
@@ -62,8 +77,12 @@ modificar_libro() {
         autor)
             campo=3
             ;;
+        isbn)
+            echo "Error: No se puede modificar el ISBN."
+            return
+            ;;
         *)
-            echo "Campo no reconocido. Use 'titulo' o 'autor'."
+            echo "Error: Campo '$2' no reconocido. Use 'titulo' o 'autor'."
             return
             ;;
     esac
@@ -77,6 +96,21 @@ modificar_libro() {
 }
 
 eliminar_libro() {
+
+    # Validar formato del ISBN
+    v_isbn=$(./util.sh "validar_isbn" "$1")
+    if [ -n "$v_isbn" ]; then
+        echo $v_isbn
+        return
+    fi
+
+    # Verificar que el libro exista
+    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    if ! [ -n "$existe" ]; then
+        echo "Error: No existe un libro con ISBN '$1'."
+        return
+    fi
+
     echo "Se borrará el libro:"
     l=$(./util.sh "buscar_linea" "$1" "$FICHERO")
     echo "$l"
