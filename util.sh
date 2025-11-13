@@ -37,7 +37,16 @@ validar_texto() {
     campo="$2"
     # Validar que el título no esté vacío y no contenga caracteres no permitidos
     if [[ -z "$texto" || "$texto" =~ [\|] ]]; then
-        echo "Error: El '$campo' '$texto' no es válido. No debe estar vacío y no debe contener el carácter '|'."
+        echo "Error: El $campo '$texto' no es válido. No debe estar vacío y no debe contener el carácter '|'."
+    fi
+    return
+}
+
+validar_documento() {
+    doc="$1"
+    # Validar formato del NIF/NIE (simplificado)
+    if ! [[ "$doc" =~ ^[0-9]{8}[A-Za-z]$ || "$doc" =~ ^[XYZ][0-9]{7}[A-Za-z]$ ]]; then
+        echo "Error: El documento '$doc' no tiene un formato válido de NIF o NIE."
     fi
     return
 }
@@ -63,7 +72,10 @@ case $1 in
     validar_texto)
         validar_texto "$2" "$3"
         ;;
+    validar_documento)
+        validar_documento "$2"
+        ;;
     *)
-        echo "Función no reconocida"
+        echo "Función '$1' no reconocida"
         ;;
 esac

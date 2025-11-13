@@ -87,6 +87,13 @@ modificar_libro() {
             ;;
     esac
 
+    # Validar el nuevo valor
+    v_texto=$(./util.sh "validar_texto" "$3" "$2")
+    if [ -n "$v_texto" ]; then
+        echo $v_texto
+        return
+    fi
+
     echo "Modificando el libro"
     echo "Registro actual: "
     ./util.sh "buscar_linea" "$1" "$FICHERO"
@@ -119,7 +126,7 @@ eliminar_libro() {
 }
 
 
-
+# Selección de operación
 case $1 in
     rl) # registrar libro
         registrar_libro "$2" "$3" "$4"
