@@ -52,37 +52,64 @@ else
         clear
         echo "Gestión de Biblioteca"
         echo "===================="
-        echo "1. Registrar libro"
-        echo "2. Buscar libro"
-        echo "3. Modificar libro"
-        echo "4. Eliminar libro"
-        echo "5. Salir"
+        echo "COD - OPERACIÓN"
+        echo "--------------------"
+        echo "rl  - Registrar libro"
+        echo "bl  - Buscar libro"
+        echo "ml  - Modificar libro"
+        echo "el  - Eliminar libro"
+        echo "--------------------"
+        echo "ru  - Registrar usuario"
+        echo "bu  - Buscar usuario"
+        echo "mu  - Modificar usuario"
+        echo "eu  - Eliminar usuario"
+        echo "--------------------"
+        echo "s   - Salir"
         echo "===================="
         read -p "Seleccione una opción: " opcion
 
         case $opcion in
-            1)
+            rl)
                 read -p "ISBN: " isbn
                 read -p "Título del libro: " titulo
                 read -p "Autor del libro: " autor
                 echo $autor
                 ./libros.sh "rl" "$isbn" "$titulo" "$autor"
                 ;;
-            2) 
-                read -p "Término de búsqueda (ISBN, título o autor): " termino
-                ./libros.sh "bl" "$termino"
+            bl) 
+                read -p "Término de búsqueda (ISBN, título o autor): " termino_lib
+                ./libros.sh "bl" "$termino_lib"
                 ;;
-            3)
+            ml)
                 read -p "ISBN del libro a modificar: " isbn_mod
                 read -p "Campo a modificar (titulo/autor): " campo
                 read -p "Nuevo valor: " nuevo_valor
                 ./libros.sh "ml" "$isbn_mod" "$campo" "$nuevo_valor"
                 ;;
-            4)
+            el)
                 read -p "ISBN del libro a eliminar: " isbn_elim
                 ./libros.sh "el" "$isbn_elim"
                 ;;
-            5)
+            ru)
+                read -p "NIF o NIE: " doc
+                read -p "Nombre de usuario: " nombre
+                ./usuarios.sh "ru" "$doc" "$nombre"
+                ;;
+            bu)
+                read -p "Término de búsqueda (NIF/NIE o nombre): " termino_usr
+                ./usuarios.sh "bu" "$termino_usr"
+                ;;
+            mu)
+                read -p "NIF o NIE del usuario a modificar: " doc_mod
+                read -p "Campo a modificar (nombre/nif/nie): " campo_usr
+                read -p "Nuevo valor: " nuevo_valor_usr
+                ./usuarios.sh "mu" "$doc_mod" "$campo_usr" "$nuevo_valor_usr"
+                ;;
+            eu)
+                read -p "NIF o NIE del usuario a eliminar: " doc_elim
+                ./usuarios.sh "eu" "$doc_elim"
+                ;;
+            s)
                 echo "Saliendo..."
                 exit 0
                 ;;
