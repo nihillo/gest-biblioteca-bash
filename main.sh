@@ -39,6 +39,24 @@ if [ $# -gt 0 ]; then
         eu) # eliminar usuario
             ./usuarios.sh "eu" "$2"
             ;;
+        rp) # registrar préstamo
+            ./prestamos.sh "rp" "$2" "$3" "$4"
+            ;;
+        dp) # registrar devolución de préstamo
+            ./prestamos.sh "dp" "$2" "$3"
+            ;;
+        lp) # listar todos los libros actualmente en préstamo
+            ./prestamos.sh "lp"
+            ;;
+        up) # listar libros prestados a un usuario
+            ./prestamos.sh "up" "$2"
+            ;;
+        cp) # consulta de préstamo de un libro (estado de préstamo, y a quién)
+            ./prestamos.sh "tp" "$2"
+            ;;
+        sp) # estadísticas de préstamos
+            ./prestamos.sh "sp"
+            ;;
         h) # ayuda
             mostrar_ayuda
             ;;
