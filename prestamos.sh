@@ -1,12 +1,44 @@
 #!/bin/bash
-
-FICHERO="prestamos.csv"
-SEPARADOR="|"
+source ./config.sh
+source ./util.sh
 
 # Funciones de gestión de préstamos
 registrar_prestamo() {
-    # Implementar la lógica para registrar un préstamo
-    echo "Función registrar_prestamo no implementada aún."
+    # Validaciones 
+    # Validar formato del ISBN
+    v_isbn=$(validar_isbn "$1")
+    if [ -n "$v_isbn" ]; then
+        echo $v_isbn
+        return
+    fi
+
+    # Verificar que el libro exista
+    existe=$(buscar_linea "$1" "$F_LIBROS")
+    if ! [ -n "$existe" ]; then
+        echo "Error: No existe un libro con ISBN '$1'."
+        return
+    fi
+
+    # Validar documento de identificación
+    v_doc=$(validar_documento "$1")
+    if [ -n "$v_doc" ]; then
+        echo $v_doc
+        return
+    fi
+
+    # Verificar que el usuario exista
+    existe=$(buscar_linea "$1" "$F_USUARIOS")
+    if [ -z "$existe" ]; then
+        echo "Error: No existe un usuario con el NIF/NIE '$1'."
+        return
+    fi
+
+    # Validar formato de la fecha
+    v_fecha=$(validar_fecha "$4")
+    if [ -n "$v_fecha" ]; then
+        echo $v_fecha
+        return
+    fi
 }
 
 registrar_devolucion() {
@@ -32,30 +64,4 @@ consultar_prestamo_libro() {
 estadisticas_prestamos() {
     # Implementar la lógica para mostrar estadísticas de préstamos
     echo "Función estadisticas_prestamos no implementada aún."
-}
-
-# Selección de operación
-case $1 in
-    rp) # registrar préstamo
-        registrar_prestamo "$2" "$3" "$4"
-        ;;
-    dp) # registrar devolución de préstamo
-        registrar_devolucion "$2" "$3"
-        ;;
-    lp) # listar todos los libros actualmente en préstamo
-        listar_prestamos
-        ;;
-    up) # listar libros prestados a un usuario
-        listar_prestamos_usuario "$2"
-        ;;
-    cp) # consulta de préstamo de un libro (estado de préstamo, y a quién)
-        consultar_prestamo_libro "$2"
-        ;;
-    sp) # estadísticas de préstamos
-        estadisticas_prestamos
-        ;;
-    *)
-        echo "Operación '$1' no reconocida en gestión de préstamos."
-        ;;
-esac
-    
+}    

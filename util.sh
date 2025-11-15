@@ -51,31 +51,13 @@ validar_documento() {
     return
 }
 
-
-
-case $1 in
-    añadir_linea)
-        añadir_linea "$2" "$3"
-        ;;
-    buscar_linea)
-        buscar_linea "$2" "$3"
-        ;;
-    modificar_linea)
-        modificar_linea "$2" "$3" "$4" "$5" "$6"
-        ;;
-    borrar_linea)
-        borrar_linea "$2" "$3"
-        ;;
-    validar_isbn)
-        validar_isbn "$2"
-        ;;
-    validar_texto)
-        validar_texto "$2" "$3"
-        ;;
-    validar_documento)
-        validar_documento "$2"
-        ;;
-    *)
-        echo "Función '$1' no reconocida"
-        ;;
-esac
+validar_fecha() {
+    fecha="$1"
+    # Validar formato de fecha YYYY-MM-DD
+    if ! [[ "$fecha" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo "Error: La fecha '$fecha' no tiene un formato válido. Debe ser 'YYYY-MM-DD'."
+    elif ! date -d "$fecha" "+%Y-%m-%d" >/dev/null 2>&1; then
+        echo "Error: La fecha '$fecha' no es una fecha válida."
+    fi
+    return
+}

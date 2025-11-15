@@ -1,42 +1,39 @@
 #!/bin/bash
-
-FICHERO="libros.csv"
-SEPARADOR="|"
-
-
+source ./config.sh
+source ./util.sh
 
 # Funciones de gestión de libros
 registrar_libro() {
 
     # Validaciones
     # Validar formato del ISBN
-    v_isbn=$(./util.sh "validar_isbn" "$1")
+    v_isbn=$(validar_isbn "$1")
     if [ -n "$v_isbn" ]; then
         echo $v_isbn
         return
     fi
 
     # Verificar que el libro no exista ya
-    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    existe=$(buscar_linea "$1" "$F_LIBROS")
     if [ -n "$existe" ]; then
         echo "Error: Ya existe un libro con el ISBN '$1'."
         return
     fi    
 
     # Validar texto del título y autor
-    v_titulo=$(./util.sh "validar_texto" "$2" "título")
+    v_titulo=$(validar_texto "$2" "título")
     if [ -n "$v_titulo" ]; then
         echo $v_titulo
         return
     fi
 
-    v_autor=$(./util.sh "validar_texto" "$3" "autor")
+    v_autor=$(validar_texto "$3" "autor")
     if [ -n "$v_autor" ]; then
         echo $v_autor
         return
     fi
 
-    ./util.sh "añadir_linea" "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$FICHERO"
+    añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$F_LIBROS"
     echo "Libro registrado: "$1 $2 $3
     return
 }
@@ -48,7 +45,7 @@ buscar_libro() {
     # Crear un archivo temporal para formatear la salida
     printf "ISBN"$SEPARADOR"Título"$SEPARADOR"Autor\n" >> salida-temp.txt
     printf "========="$SEPARADOR"=========="$SEPARADOR"==========\n" >> salida-temp.txt
-    ./util.sh "buscar_linea" "$1" "$FICHERO" >> salida-temp.txt
+    buscar_linea "$1" "$F_LIBROS" >> salida-temp.txt
     # Salida formateada en columnas
     column -t -s{$SEPARADOR} salida-temp.txt
     # Se elimina el archivo temporal
@@ -57,14 +54,14 @@ buscar_libro() {
 
 modificar_libro() {
     # Validar formato del ISBN
-    v_isbn=$(./util.sh "validar_isbn" "$1")
+    v_isbn=$(validar_isbn "$1")
     if [ -n "$v_isbn" ]; then
         echo $v_isbn
         return
     fi
 
     # Verificar que el libro exista
-    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    existe=$(buscar_linea "$1" "$F_LIBROS")
     if ! [ -n "$existe" ]; then
         echo "Error: No existe un libro con ISBN '$1'."
         return
@@ -88,7 +85,7 @@ modificar_libro() {
     esac
 
     # Validar el nuevo valor
-    v_texto=$(./util.sh "validar_texto" "$3" "$2")
+    v_texto=$(validar_texto "$3" "$2")
     if [ -n "$v_texto" ]; then
         echo $v_texto
         return
@@ -96,51 +93,31 @@ modificar_libro() {
 
     echo "Modificando el libro"
     echo "Registro actual: "
-    ./util.sh "buscar_linea" "$1" "$FICHERO"
-    ./util.sh "modificar_linea" "$1" "$campo" "$3" "$FICHERO" "$SEPARADOR"
+    buscar_linea "$1" "$F_LIBROS"
+    modificar_linea "$1" "$campo" "$3" "$F_LIBROS" "$SEPARADOR"
     echo "Registro modificado: "
-    ./util.sh "buscar_linea" "$1" "$FICHERO"
+    buscar_linea "$1" "$F_LIBROS"
 }
 
 eliminar_libro() {
 
     # Validar formato del ISBN
-    v_isbn=$(./util.sh "validar_isbn" "$1")
+    v_isbn=$(validar_isbn "$1")
     if [ -n "$v_isbn" ]; then
         echo $v_isbn
         return
     fi
 
     # Verificar que el libro exista
-    existe=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    existe=$(buscar_linea "$1" "$F_LIBROS")
     if ! [ -n "$existe" ]; then
         echo "Error: No existe un libro con ISBN '$1'."
         return
     fi
 
     echo "Se borrará el libro:"
-    l=$(./util.sh "buscar_linea" "$1" "$FICHERO")
+    l=$(buscar_linea "$1" "$F_LIBROS")
     echo "$l"
-    ./util.sh "borrar_linea" "$l" "$FICHERO"
+    borrar_linea "$l" "$F_LIBROS"
     echo "Libro eliminado"
 }
-
-
-# Selección de operación
-case $1 in
-    rl) # registrar libro
-        registrar_libro "$2" "$3" "$4"
-        ;;
-    bl) # buscar libro
-        buscar_libro "$2"
-        ;;
-    ml) # modificar libro
-        modificar_libro "$2" "$3" "$4"
-        ;;
-    el) # eliminar libro
-        eliminar_libro "$2"
-        ;;
-    *)
-        echo "Operación no reconocida. Uso: $0 {add|list|search|delete} [args]"
-        ;;
-esac
