@@ -20,25 +20,29 @@ registrar_prestamo() {
     fi
 
     # Validar documento de identificación
-    v_doc=$(validar_documento "$1")
+    v_doc=$(validar_documento "$2")
     if [ -n "$v_doc" ]; then
         echo $v_doc
         return
     fi
 
     # Verificar que el usuario exista
-    existe=$(buscar_linea "$1" "$F_USUARIOS")
+    existe=$(buscar_linea "$2" "$F_USUARIOS")
     if [ -z "$existe" ]; then
-        echo "Error: No existe un usuario con el NIF/NIE '$1'."
+        echo "Error: No existe un usuario con el NIF/NIE '$2'."
         return
     fi
 
     # Validar formato de la fecha
-    v_fecha=$(validar_fecha "$4")
+    v_fecha=$(validar_fecha "$3")
     if [ -n "$v_fecha" ]; then
         echo $v_fecha
         return
     fi
+
+    añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$F_PRESTAMOS"
+    echo "Préstamo registrado: "$1 $2 $3
+    return
 }
 
 registrar_devolucion() {

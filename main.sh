@@ -5,12 +5,26 @@ source ./prestamos.sh
 
 
 mostrar_ayuda() {
-    echo "Uso: $0 [comando] [args]"
-    echo "Comandos:"
-    echo "  rl [ISBN] [Título] [Autor]     - Registrar libro"
-    echo "  bl [Término]                   - Buscar libro"
-    echo "  ml [ISBN] [campo] [nuevo_valor] - Modificar libro"
-    echo "  el [ISBN]                      - Eliminar libro"
+    echo "Uso sin argumentos inicia el menú interactivo:"
+    echo "$0"
+    echo "Uso con comandos:"
+    echo "$0 [comando] [args]"
+    echo "Comandos disponibles:"
+    echo "  rl [ISBN] [Título] [Autor]         - Registrar libro"
+    echo "  bl [Término]                       - Buscar libro"
+    echo "  ml [ISBN] [campo] [nuevo_valor]    - Modificar libro"
+    echo "  el [ISBN]                          - Eliminar libro"
+    echo "  ru [NIF/NIE] [Nombre]              - Registrar usuario"
+    echo "  bu [Término]                       - Buscar usuario"
+    echo "  mu [NIF/NIE] [campo] [nuevo_valor] - Modificar usuario"
+    echo "  eu [NIF/NIE]                       - Eliminar usuario"
+    echo "  rp [ISBN] [NIF/NIE] [Fecha]        - Registrar préstamo"
+    echo "  dp [ISBN] [Fecha]                  - Registrar devolución de préstamo"
+    echo "  lp                                 - Listar libros en préstamo"
+    echo "  up [NIF/NIE]                       - Listar libros prestados a un usuario"
+    echo "  cp [ISBN]                          - Consulta de estado de préstamo de un libro"
+    echo "  sp                                 - Estadísticas de préstamos"
+    echo "  h                                  - Mostrar esta ayuda"
 }
 
 

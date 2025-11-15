@@ -129,23 +129,3 @@ eliminar_usuario() {
     borrar_linea "$u" "$F_USUARIOS"
     echo "Usuario eliminado"
 }
-
-
-# Seleccion de la operación
-case $1 in
-    ru) # registrar usuario
-        registrar_usuario "$2" "$3" "$4"
-        ;;
-    bu) # buscar usuario
-        buscar_usuario "$2"
-        ;;
-    mu) # modificar usuario
-        modificar_usuario "$2" "$3" "$4"
-        ;;
-    eu) # eliminar usuario
-        eliminar_usuario "$2"
-        ;;
-    *)
-        echo "Operación no reconocida. Uso: $0 {add|list|search|delete} [args]"
-        ;;
-esac
