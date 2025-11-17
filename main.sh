@@ -107,6 +107,8 @@ else
         echo "cp  - Consulta de estado de préstamo de un libro"
         echo "sp  - Estadísticas de préstamos"
         echo "--------------------"
+        echo "h   - Ayuda"
+        echo "--------------------"
         echo "s   - Salir"
         echo "===================="
         read -p "Seleccione una opción: " opcion
