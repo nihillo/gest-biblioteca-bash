@@ -169,7 +169,7 @@ consultar_prestamo_libro() {
 
 estadisticas_prestamos() {
     echo "Libros más prestados históricamente:"
-    # Consultar los 10 procesos con más memoria como “simulación” de libros más prestados históricamente.
-    # Mostrar de forma tabulada las columnas PID, COMMAND, %MEM, %CPU
+    # Consulta los 10 procesos con más memoria como “simulación” de libros más prestados históricamente.
+    # Muestra de forma tabulada las columnas PID, COMMAND, %MEM, %CPU
     ps aux --sort=-%mem | head -n 11 | awk 'NR==1 {print $2, $11, $4, $3} NR>1 {print $2, $11, $4, $3}' | column -t
 }    

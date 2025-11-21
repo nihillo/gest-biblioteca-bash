@@ -2,23 +2,52 @@
 
 # Funciones de gestión de archivos CSV
 añadir_linea() {
+    # Verificar que el fichero existe, si no, crearlo
+    if [ ! -f "$2" ]; then
+        touch "$2"
+    fi
+
+    # Añadir la línea al final del fichero
     printf "$1\n" >> $2
+    return 0
 }
 
 buscar_linea() {
+    # Verificar que el fichero existe
+    if [ ! -f "$2" ]; then
+        echo "Error: El fichero '$2' no existe."
+        return 1
+    fi
     grep -i "$1" $2
+    return 0
 }
 
 modificar_linea() {
+    # Verificar que el fichero existe
+    if [ ! -f "$4" ]; then
+        echo "Error: El fichero '$4' no existe."
+        return 1
+    fi
+
+    # Modificar la línea en el fichero CSV
     awk \
         -v id="$1" \
         -v col="$2" \
         -v valor="$3" \
         'BEGIN {FS=OFS="'$5'"} $1 == id {$col = valor} 1' "$4" > tmp.csv && mv tmp.csv "$4"
+    return 0
 }
 
 borrar_linea () {
+    # Verificar que el fichero existe
+    if [ ! -f "$2" ]; then
+        echo "Error: El fichero '$2' no existe."
+        return 1
+    fi
+    
+    # Borrar la línea del fichero CSV
     sed -i "/$1/d" "$2"
+    return 0
 }
 
 
