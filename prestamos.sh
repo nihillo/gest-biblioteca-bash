@@ -1,52 +1,44 @@
 #!/bin/bash
 source ./config.sh
 source ./util.sh
+source ./libros.sh
+source ./usuarios.sh
+
+verificar_libro_no_prestado() {
+    # Verificar que el libro no esté prestado (devolución NULL)
+    prestamo=$(buscar_linea "$1" "$F_PRESTAMOS")
+    if echo "$prestamo" | cut -d"$SEPARADOR" -f4 | grep -q "NULL"; then
+        echo "Error: El libro con ISBN '$1' está actualmente prestado y no puede ser modificado o eliminado."
+        return
+    fi
+}
+
+verificar_libro_prestado() {
+    # Verificar que haya un préstamo activo para el libro (devolución NULL)
+    prestamo_activo=$(buscar_linea "$1" "$F_PRESTAMOS")
+    if [ -z "$prestamo_activo" ] || [[ $(echo "$prestamo_activo" | cut -d"$SEPARADOR" -f4) != "NULL" ]]; then
+        echo "Error: No hay un préstamo activo para el libro con ISBN '$1'."
+        return
+    fi
+}
 
 # Funciones de gestión de préstamos
 registrar_prestamo() {
     # Validaciones 
-    # Validar formato del ISBN
     v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
-
-    # Verificar que el libro exista
-    existe=$(buscar_linea "$1" "$F_LIBROS")
-    if ! [ -n "$existe" ]; then
-        echo "Error: No existe un libro con ISBN '$1'."
-        return
-    fi
-
-    # Validar documento de identificación
+    v_existe_libro=$(verificar_existe_libro "$1")
     v_doc=$(validar_documento "$2")
-    if [ -n "$v_doc" ]; then
-        echo $v_doc
-        return
-    fi
-
-    # Verificar que el usuario exista
-    existe=$(buscar_linea "$2" "$F_USUARIOS")
-    if [ -z "$existe" ]; then
-        echo "Error: No existe un usuario con el NIF/NIE '$2'."
-        return
-    fi
-
-    # Validar formato de la fecha
+    v_existe_usuario=$(verificar_existe_usuario "$2")
     v_fecha=$(validar_fecha "$3")
-    if [ -n "$v_fecha" ]; then
-        echo $v_fecha
-        return
-    fi
+    v_libro_no_prestado=$(verificar_libro_no_prestado "$1")
 
-    # Verificar que el libro no esté ya prestado (devolución NULL)
-    prestado=$(buscar_linea "$1" "$F_PRESTAMOS")
-    echo 
-    if echo "$prestado" | cut -d"$SEPARADOR" -f4 | grep -q "NULL"; then
-        echo "Error: El libro con ISBN '$1' ya está prestado y no ha sido devuelto."
-        return
-    fi
+    for v in "$v_isbn" "$v_existe_libro" "$v_doc" "$v_existe_usuario" "$v_fecha" "$v_libro_no_prestado"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
+    
 
     añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3""$SEPARADOR""NULL" "$F_PRESTAMOS"
     echo "Préstamo registrado: "$1 $2 $3
@@ -55,26 +47,16 @@ registrar_prestamo() {
 
 registrar_devolucion() {
     # Validaciones
-    # Validar formato del ISBN
     v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
-
-    # Validar formato de la fecha
     v_fecha=$(validar_fecha "$2")
-    if [ -n "$v_fecha" ]; then
-        echo $v_fecha
-        return
-    fi
+    v_libro_prestado=$(verificar_libro_prestado "$1")
 
-    # Verificar que haya un préstamo activo para el libro (devolución NULL)
-    prestamo_activo=$(buscar_linea "$1" "$F_PRESTAMOS")
-    if [ -z "$prestamo_activo" ] || [[ $(echo "$prestamo_activo" | cut -d"$SEPARADOR" -f4) != "NULL" ]]; then
-        echo "Error: No hay un préstamo activo para el libro con ISBN '$1'."
-        return
-    fi
+    for v in "$v_isbn" "$v_fecha" "$v_libro_prestado"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done    
 
     # Actualizar la línea del préstamo con la fecha de devolución
     echo "Actualizando devolución del libro con ISBN '$1'..."
@@ -108,19 +90,15 @@ listar_prestamos() {
 
 listar_prestamos_usuario() {
     # Validaciones
-    # Validar documento de identificación
     v_doc=$(validar_documento "$1")
-    if [ -n "$v_doc" ]; then
-        echo $v_doc
-        return
-    fi
+    v_existe_usuario=$(verificar_existe_usuario "$1")
 
-    # Verificar que el usuario exista
-    existe=$(buscar_linea "$1" "$F_USUARIOS")
-    if [ -z "$existe" ]; then
-        echo "Error: No existe un usuario con el NIF/NIE '$1'."
-        return
-    fi
+    for v in "$v_doc" "$v_existe_usuario"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
 
     echo "Libros actualmente en préstamo para el usuario:"
     echo "NIF/NIE: '$1'"
@@ -156,19 +134,15 @@ listar_prestamos_usuario() {
 
 consultar_prestamo_libro() {
     # Validaciones
-    # Validar formato del ISBN
     v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
+    v_existe_libro=$(verificar_existe_libro "$1")
 
-    # Verificar que el libro exista
-    existe=$(buscar_linea "$1" "$F_LIBROS")
-    if ! [ -n "$existe" ]; then
-        echo "Error: No existe un libro con ISBN '$1'."
-        return
-    fi
+    for v in "$v_isbn" "$v_existe_libro"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
 
     echo "Estado de préstamo del libro con ISBN '$1':"
 

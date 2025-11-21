@@ -11,11 +11,11 @@ cp prestamos.csv prestamos_backup.csv
 echo "#### PRUEBAS DE LIBROS ####" && echo "------"
 # Registrar libro
 echo "LR01 - Registrar libro con ISBN no válido" && ./main.sh rl 1234 Titulo Autor && echo "------"
-echo "LR02 - Registrar libro ya registrado" && ./main.sh rl 978-0261103207 && echo "------"
-echo "LR03 - Registrar libro con caracteres incorrectos en título" && ./main.sh rl 123-0261103207 "La importancia del carácter |" "Autor Prueba" && echo "------"
-echo "LR04 - Registrar libro con título vacío" && ./main.sh rl 123-0261103207 "" "Autor Prueba" && echo "------"
-echo "LR05 - Registrar libro con caracteres incorrectos en autor" && ./main.sh rl 123-0261103207 "Título del libro" "Autor | Prueba" && echo "------"
-echo "LR06 - Registrar libro con autor vacío" && ./main.sh rl 123-0261103207 "Título del libro" "" && echo "------"
+echo "LR02 - Registrar libro con caracteres incorrectos en título" && ./main.sh rl 123-0261103207 "La importancia del carácter |" "Autor Prueba" && echo "------"
+echo "LR03 - Registrar libro con título vacío" && ./main.sh rl 123-0261103207 "" "Autor Prueba" && echo "------"
+echo "LR04 - Registrar libro con caracteres incorrectos en autor" && ./main.sh rl 123-0261103207 "Título del libro" "Autor | Prueba" && echo "------"
+echo "LR05 - Registrar libro con autor vacío" && ./main.sh rl 123-0261103207 "Título del libro" "" && echo "------"
+echo "LR06 - Registrar libro ya registrado" && ./main.sh rl 978-0261103207 "La comunidad del anillo" "J.R.R. Tolkien" && echo "------"
 echo "LR07 - Registrar libro válido" && ./main.sh rl 123-0261103207 "Título del libro" "Autor Prueba" && grep -i 123-0261103207 libros.csv && echo "------"
 
 # Buscar libro

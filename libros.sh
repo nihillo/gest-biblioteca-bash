@@ -2,37 +2,40 @@
 source ./config.sh
 source ./util.sh
 
-# Funciones de gestión de libros
-registrar_libro() {
-
-    # Validaciones
-    # Validar formato del ISBN
-    v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
-
+verificar_no_existe_libro() {
     # Verificar que el libro no exista ya
     existe=$(buscar_linea "$1" "$F_LIBROS")
     if [ -n "$existe" ]; then
         echo "Error: Ya existe un libro con el ISBN '$1'."
         return
-    fi    
+    fi
+}
 
-    # Validar texto del título y autor
+verificar_existe_libro() {
+    # Verificar que el libro exista
+    existe=$(buscar_linea "$1" "$F_LIBROS")
+    if ! [ -n "$existe" ]; then
+        echo "Error: No existe un libro con ISBN '$1'."
+        return
+    fi
+}
+
+# Funciones de gestión de libros
+registrar_libro() {
+
+    # Validaciones
+    v_isbn=$(validar_isbn "$1")
+    v_no_existe=$(verificar_no_existe_libro "$1")
     v_titulo=$(validar_texto "$2" "título")
-    if [ -n "$v_titulo" ]; then
-        echo $v_titulo
-        return
-    fi
-
     v_autor=$(validar_texto "$3" "autor")
-    if [ -n "$v_autor" ]; then
-        echo $v_autor
-        return
-    fi
 
+    for v in "$v_isbn" "$v_no_existe" "$v_titulo" "$v_autor"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
+    
     añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$F_LIBROS"
     echo "Libro registrado: "$1 $2 $3
     return
@@ -53,19 +56,17 @@ buscar_libro() {
 }
 
 modificar_libro() {
-    # Validar formato del ISBN
+    # Validaciones
     v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
-
-    # Verificar que el libro exista
-    existe=$(buscar_linea "$1" "$F_LIBROS")
-    if ! [ -n "$existe" ]; then
-        echo "Error: No existe un libro con ISBN '$1'."
-        return
-    fi
+    v_existe=$(verificar_existe_libro "$1")
+    v_nuevo_valor=$(validar_texto "$3" "$2")
+    
+    for v in "$v_isbn" "$v_existe" "$v_nuevo_valor"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
 
     case $2 in
         titulo)
@@ -84,13 +85,6 @@ modificar_libro() {
             ;;
     esac
 
-    # Validar el nuevo valor
-    v_texto=$(validar_texto "$3" "$2")
-    if [ -n "$v_texto" ]; then
-        echo $v_texto
-        return
-    fi
-
     echo "Modificando el libro"
     echo "Registro actual: "
     buscar_linea "$1" "$F_LIBROS"
@@ -101,19 +95,16 @@ modificar_libro() {
 
 eliminar_libro() {
 
-    # Validar formato del ISBN
+    # Validaciones
     v_isbn=$(validar_isbn "$1")
-    if [ -n "$v_isbn" ]; then
-        echo $v_isbn
-        return
-    fi
+    v_existe=$(verificar_existe_libro "$1")
 
-    # Verificar que el libro exista
-    existe=$(buscar_linea "$1" "$F_LIBROS")
-    if ! [ -n "$existe" ]; then
-        echo "Error: No existe un libro con ISBN '$1'."
-        return
-    fi
+    for v in "$v_isbn" "$v_existe"; do
+        if [ -n "$v" ]; then
+            echo $v
+            return
+        fi
+    done
 
     echo "Se borrará el libro:"
     l=$(buscar_linea "$1" "$F_LIBROS")
