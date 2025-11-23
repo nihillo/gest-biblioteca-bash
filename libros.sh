@@ -36,6 +36,7 @@ registrar_libro() {
         fi
     done
     
+    # Registrar el libro
     añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3" "$F_LIBROS"
     echo "Libro registrado: "$1 $2 $3
     return
@@ -68,6 +69,7 @@ modificar_libro() {
         fi
     done
 
+    # Determinar el campo a modificar
     case $2 in
         titulo)
             campo=2
@@ -85,6 +87,7 @@ modificar_libro() {
             ;;
     esac
 
+    # Modificar el libro
     echo "Modificando el libro"
     echo "Registro actual: "
     buscar_linea "$1" "$F_LIBROS"
@@ -106,6 +109,7 @@ eliminar_libro() {
         fi
     done
 
+    # Eliminar el libro
     echo "Se borrará el libro:"
     l=$(buscar_linea "$1" "$F_LIBROS")
     echo "$l"

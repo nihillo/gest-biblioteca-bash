@@ -39,7 +39,7 @@ registrar_prestamo() {
         fi
     done
     
-
+    # Registrar el préstamo
     añadir_linea "$1""$SEPARADOR""$2""$SEPARADOR""$3""$SEPARADOR""NULL" "$F_PRESTAMOS"
     echo "Préstamo registrado: "$1 $2 $3
     return
@@ -100,6 +100,7 @@ listar_prestamos_usuario() {
         fi
     done
 
+    # Comienzo de la salida
     echo "Libros actualmente en préstamo para el usuario:"
     echo "NIF/NIE: '$1'"
     echo "Nombre: $(buscar_linea "$1" "$F_USUARIOS" | cut -d"$SEPARADOR" -f2)"
@@ -111,6 +112,7 @@ listar_prestamos_usuario() {
     # Crear un archivo temporal para formatear la salida
     printf "ISBN"$SEPARADOR"Título"$SEPARADOR"Fecha Préstamo\n" >> salida-temp.txt
     printf "===="$SEPARADOR"======"$SEPARADOR"==============\n" >> salida-temp.txt
+    # Leer linea a linea el archivo de préstamos y filtrar por NIF/NIE y fecha_devolución NULL
     while IFS=$SEPARADOR read -r isbn nif fecha_prestamo fecha_devolucion; do
         if [ "$nif" == "$1" ] && [ "$fecha_devolucion" == "NULL" ]; then
             tiene_prestamos=true
@@ -119,12 +121,13 @@ listar_prestamos_usuario() {
         fi
     done < "$F_PRESTAMOS"
 
-    # Salida formateada en columnas
     if [ "$tiene_prestamos" = false ]; then
+        # Salida simple indicando que no tiene préstamos
         echo "El usuario no tiene libros en préstamo."
         rm salida-temp.txt
         return
     else 
+        # Salida con el resultado de la búsqueda formateado en columnas
         column -t -s{$SEPARADOR} salida-temp.txt
     fi
 
@@ -149,18 +152,20 @@ consultar_prestamo_libro() {
      # Iniciar flag para, en caso de no tener préstamos, indicarlo
     tiene_prestamos=false
     
+    # Leer linea a linea el archivo de préstamos y filtrar por ISBN y fecha_devolución NULL
     while IFS=$SEPARADOR read -r isbn nif fecha_prestamo fecha_devolucion; do
         if [ "$isbn" == "$1" ] && [ "$fecha_devolucion" == "NULL" ]; then
             tiene_prestamos=true
             titulo=$(buscar_linea "$isbn" "$F_LIBROS" | cut -d"$SEPARADOR" -f2)
             nombre_usuario=$(buscar_linea "$nif" "$F_USUARIOS" | cut -d"$SEPARADOR" -f2)
+            # Salida del resultado
             echo "El libro con ISBN '$isbn' y título '$titulo' está actualmente prestado al usuario:"
             echo "NIF/NIE: $nif"
             echo "Nombre: $nombre_usuario"
         fi
     done < "$F_PRESTAMOS"
 
-    # Salida formateada en columnas
+    # Salida en caso de no tener préstamos
     if [ "$tiene_prestamos" = false ]; then
         echo "El libro no está actualmente prestado."
     fi

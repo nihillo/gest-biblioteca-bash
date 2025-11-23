@@ -34,6 +34,7 @@ registrar_usuario() {
         fi
     done
 
+    # Registrar usuario
     añadir_linea "$1""$SEPARADOR""$2" "$F_USUARIOS"
     echo "Usuario registrado: "$1 $2
 }
@@ -93,7 +94,7 @@ modificar_usuario() {
     buscar_linea "$1" "$F_USUARIOS"
     modificar_linea "$1" "$campo" "$3" "$F_USUARIOS" "$SEPARADOR"
     
-
+    # Mostrar el registro modificado
     if [ "$campo" -eq 1 ]; then
         doc_busqueda="$3"
     else
@@ -115,6 +116,7 @@ eliminar_usuario() {
         fi
     done
 
+    # Eliminar usuario
     echo "Se borrará el usuario:" $1
     u=$(buscar_linea "$1" "$F_USUARIOS")
     echo "$u"

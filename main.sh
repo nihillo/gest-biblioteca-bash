@@ -5,6 +5,7 @@ source ./prestamos.sh
 
 
 mostrar_ayuda() {
+    #  Mostrar la ayuda del script
     echo "Uso sin argumentos inicia el menú interactivo:"
     echo "$0"
     echo "Uso con comandos:"
@@ -85,7 +86,10 @@ if [ $# -gt 0 ]; then
     esac
 else
     while true; do
+        # Limpiar pantalla
         clear
+
+        # Mostrar menú
         echo "Gestión de Biblioteca"
         echo "===================="
         echo "COD - OPERACIÓN"
@@ -111,79 +115,82 @@ else
         echo "--------------------"
         echo "s   - Salir"
         echo "===================="
+
+        # Pedir opción al usuario
         read -p "Seleccione una opción: " opcion
 
+        # Ejecutar la operación correspondiente
         case $opcion in
-            rl)
+            rl) # registrar libro
                 read -p "ISBN: " isbn
                 read -p "Título del libro: " titulo
                 read -p "Autor del libro: " autor
                 echo $autor
                 registrar_libro "$isbn" "$titulo" "$autor"
                 ;;
-            bl) 
+            bl) # buscar libro
                 read -p "Término de búsqueda (ISBN, título o autor): " termino_lib
                 buscar_libro "$termino_lib"
                 ;;
-            ml)
+            ml) # modificar libro
                 read -p "ISBN del libro a modificar: " isbn_mod
                 read -p "Campo a modificar (titulo/autor): " campo
                 read -p "Nuevo valor: " nuevo_valor
                 modificar_libro "$isbn_mod" "$campo" "$nuevo_valor"
                 ;;
-            el)
+            el) # eliminar libro
                 read -p "ISBN del libro a eliminar: " isbn_elim
                 eliminar_libro "$isbn_elim"
                 ;;
-            ru)
+            ru) # registrar usuario
                 read -p "NIF o NIE: " doc
                 read -p "Nombre de usuario: " nombre
                 registrar_usuario "$doc" "$nombre"
                 ;;
-            bu)
+            bu) # buscar usuario
                 read -p "Término de búsqueda (NIF/NIE o nombre): " termino_usr
                 buscar_usuario "$termino_usr"
                 ;;
-            mu)
+            mu) # modificar usuario
                 read -p "NIF o NIE del usuario a modificar: " doc_mod
                 read -p "Campo a modificar (nombre/nif/nie): " campo_usr
                 read -p "Nuevo valor: " nuevo_valor_usr
                 modificar_usuario "$doc_mod" "$campo_usr" "$nuevo_valor_usr"
                 ;;
-            eu)
+            eu) # eliminar usuario
                 read -p "NIF o NIE del usuario a eliminar: " doc_elim
                 eliminar_usuario "$doc_elim"
                 ;;
-            rp)
+            rp) # registrar préstamo
                 read -p "ISBN del libro a prestar: " isbn_prestamo
                 read -p "NIF o NIE del usuario: " doc_usuario
                 read -p "Fecha de préstamo (YYYY-MM-DD): " fecha_prestamo
                 registrar_prestamo "$isbn_prestamo" "$doc_usuario" "$fecha_prestamo"
                 ;;
-            dp)
+            dp) # registrar devolución de préstamo
                 read -p "ISBN del libro a devolver: " isbn_devolucion
                 read -p "Fecha de devolución (YYYY-MM-DD): " fecha_devolucion
                 registrar_devolucion "$isbn_devolucion" "$fecha_devolucion"
                 ;;
-            lp)
+            lp) # listar todos los libros actualmente en préstamo
                 listar_prestamos
                 ;;
-            up) 
+            up) # listar libros prestados a un usuario
                 read -p "NIF o NIE del usuario: " doc_usuario_up
                 listar_prestamos_usuario "$doc_usuario_up"
                 ;;
-            cp)
+            cp) # consulta de préstamo de un libro (estado de préstamo, y a quién)
                 read -p "ISBN del libro: " isbn_consulta
                 consultar_prestamo_libro "$isbn_consulta"
                 ;;
-            sp) 
+            sp) # estadísticas de préstamos
                 estadisticas_prestamos
                 ;;
-            s)
+            s) # salir del programa
                 echo "Saliendo..."
                 exit 0
                 ;;
-            *)
+            *) 
                 echo "Opción no válida."
                 ;;
         esac

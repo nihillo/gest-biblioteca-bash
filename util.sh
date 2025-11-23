@@ -18,6 +18,7 @@ buscar_linea() {
         echo "Error: El fichero '$2' no existe."
         return 1
     fi
+    # Buscar la línea en el fichero CSV
     grep -i "$1" $2
     return 0
 }
@@ -54,7 +55,7 @@ borrar_linea () {
 # Funciones de validación
 validar_isbn() {
     isbn="$1"
-    # Validar que el ISBN tenga 13 dígitos (formato ISBN-13)
+    # Validar que el ISBN tenga formato de 13 dígitos con guion (XXX-XXXXXXXXXX)
     if ! [[ "$isbn" =~ ^[0-9]{3}\-[0-9]{10}$ ]]; then
         echo "Error: El ISBN '$isbn' no tiene un formato válido. Debe ser 'XXX-XXXXXXXXXX' donde X es un dígito."
     fi
